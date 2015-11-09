@@ -1,3 +1,4 @@
 defmodule Product do
-	defstruct name: "", price: 0, quantity: 0
+	@derive [Poison.Encoder]
+	defstruct [:name, :price, :quantity]
 end
