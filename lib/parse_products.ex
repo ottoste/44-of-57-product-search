@@ -1,5 +1,10 @@
 defmodule ParseProducts do
 
+	def parsed_file do
+		get_file
+		|> parse_products_list
+	end
+
 	def get_file do
 		File.read("products.json")
 	end

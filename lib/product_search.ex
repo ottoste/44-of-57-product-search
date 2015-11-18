@@ -1,30 +1,44 @@
 defmodule ProductSearch do
 	
+	def main do
+		product = get_product_data 
+		cond do 
+			product == nil 	-> error_message
+			true 						-> product_message(product) 
+		end
+	end
+
 	def get_product_name_from_user do
 		IO.gets("What is the product name?")
 		|> String.strip
 		|> String.downcase
 	end
 
-	def create_list_of_details(product_data) do
-		{:ok, product} = product_data
-		[product.name, product.price, product.quantity]
+	def get_product_data do
+		search = get_product_name_from_user
+		{:ok, product} = ParseProducts.parsed_file |> QueryProducts.find_by_name(search)
+		product
 	end
 
-	def build_output_message(name, price, quantity) do
+	def error_message do
+		IO.puts("Product not found, please try again.")
+		main
+	end
+
+	def product_message(product) do
+		[name, price, quantity] = create_list_of_details(product)
+		IO.puts(
 		"""
 		Name: #{name}
 		Price: #{price}
 		Quantity on hand: #{quantity}
-		"""	
-	end	
-
-	def main do
-		parsed_file = ParseProducts.get_file |> ParseProducts.parse_products_list
-		product_data = get_product_name_from_user |> QueryProducts.find_by_name(parsed_file)
-		[name, price, quantity] = create_list_of_details(product_data)
-		IO.puts(build_output_message(name, price, quantity))
+		""")	
 	end
+
+	def create_list_of_details(product) do
+		[product.name, product.price, product.quantity]
+	end
+
 
 
 end
